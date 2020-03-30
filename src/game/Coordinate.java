@@ -1,6 +1,6 @@
 package game;
 
-public class Coordinate implements Cloneable {
+public class Coordinate {
     private int r, c;
 
     public Coordinate(int r, int c) {
@@ -8,18 +8,19 @@ public class Coordinate implements Cloneable {
         this.c = c;
     }
 
-    public int getR() { return r; }
-    public int getC() { return c; }
-
-    public Coordinate clone() {
-        try {
-            return (Coordinate) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+    public int getR() {
+        return r;
     }
 
-    public Coordinate drop() {
-        return new Coordinate(r + 1, c);
+    public int getC() {
+        return c;
+    }
+
+    Coordinate move(int dr, int dc) {
+        return new Coordinate(r + dr, c + dc);
+    }
+
+    public String toString() {
+        return "(" + r + ", " + c + ")";
     }
 }
