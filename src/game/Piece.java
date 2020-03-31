@@ -24,7 +24,7 @@ public class Piece {
         this.graphic = graphic;
     }
 
-    public String getName() { return name; }
+    String getName() { return name; }
 
     public ArrayList<Tile> getTiles() { return tiles; }
 
@@ -47,7 +47,12 @@ public class Piece {
         return movedClone(newPositions, newCorner);
     }
 
-    Piece move(int dr, int dc) { return move(dr, dc, Board.ROWS); }
+    Piece move(int dr, int dc) {
+        int maxRow = 0;
+        for (Tile t : tiles)
+            maxRow = Math.max(maxRow, t.getPosition().getR());
+        return move(dr, dc, maxRow + 1);
+    }
 
     Piece rotate(boolean clockwise) {
         ArrayList<Coordinate> newPositions = new ArrayList<>();
@@ -69,17 +74,6 @@ public class Piece {
                 newPositions.add(pos);
         }
         return movedClone(newPositions, corner);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        if (tiles.size() > 0)
-            sb.append(tiles.get(0).getPosition().toString());
-        for (int i = 1; i < tiles.size(); i++)
-            sb.append(", ").append(tiles.get(i).getPosition().toString());
-        sb.append("}");
-        return sb.toString();
     }
 
     private Piece movedClone(ArrayList<Coordinate> newPositions, Coordinate newCorner) {

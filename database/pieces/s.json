@@ -1,20 +1,20 @@
 {
-  "name": "z",
+  "name": "s",
   "tiles": [
     {
-      "position": { "r": 0, "c": 3 }
+      "position": { "r": 0, "c": 0 }
     },
     {
-      "position": { "r": 0, "c": 4 }
+      "position": { "r": 0, "c": -1 }
     },
     {
-      "position": { "r": 1, "c": 4 }
+      "position": { "r": 1, "c": -1 }
     },
     {
-      "position": { "r": 1, "c": 5 }
+      "position": { "r": 1, "c": -2 }
     }
   ],
-  "corner": { "r": 0, "c": 3 },
+  "corner": { "r": 0, "c": -2 },
   "boxSize": 3,
   "orientation": 0,
   "wallJumps": [
@@ -83,6 +83,6 @@
       ]
     ]
   ],
-  "color": "RED",
-  "subImg": [240, 72, 24, 24]
+  "color": "GREEN",
+  "subImg": [72, 72, 24, 24]
 }

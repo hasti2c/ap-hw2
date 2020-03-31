@@ -3,15 +3,23 @@ package game;
 import java.util.ArrayList;
 
 public class Board {
-    final static int ROWS = 20, COLUMNS = 10;
-    private Piece[][] grid = new Piece[ROWS][COLUMNS];
+    private int rows, columns;
+    private Piece[][] grid;
     private ArrayList<Piece> pieces = new ArrayList<>();
+
+    Board(int rows, int columns) {
+        this.rows = rows;
+        this.columns = columns;
+        grid = new Piece[rows][columns];
+    }
 
     private Piece getPiece(Coordinate pos) { return grid[pos.getR()][pos.getC()]; }
 
     private void setPiece(Coordinate pos, Piece p) { grid[pos.getR()][pos.getC()] = p; }
 
-    private boolean validPosition(Coordinate pos) { return pos.getR() >= 0 && pos.getR() < ROWS && pos.getC() >= 0 && pos.getC() < COLUMNS; }
+    public ArrayList<Piece> getPieces() { return pieces; }
+
+    private boolean validPosition(Coordinate pos) { return pos.getR() >= 0 && pos.getR() < rows && pos.getC() >= 0 && pos.getC() < columns; }
 
     Piece[] getRow(int r) { return grid[r]; }
 
@@ -38,14 +46,13 @@ public class Board {
         }
     }
 
-    boolean removePiece(Piece p) {
+    void removePiece(Piece p) {
         pieces.remove(p);
         for (Tile t : p.getTiles()) {
             Coordinate pos = t.getPosition();
             assert getPiece(pos) == p;
             setPiece(pos,null);
         }
-        return true;
     }
 
     boolean fullRow(int r) {
@@ -58,8 +65,8 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0 ; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++)
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++)
                 if (grid[i][j] == null)
                     sb.append(". ");
                 else

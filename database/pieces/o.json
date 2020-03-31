@@ -2,19 +2,19 @@
   "name": "o",
   "tiles": [
     {
-      "position": { "r": 0, "c": 4 }
+      "position": { "r": 0, "c": -1 }
     },
     {
-      "position": { "r": 0, "c": 5 }
+      "position": { "r": 0, "c": 0 }
     },
     {
-      "position": { "r": 1, "c": 4 }
+      "position": { "r": 1, "c": -1 }
     },
     {
-      "position": { "r": 1, "c": 5 }
+      "position": { "r": 1, "c": 0 }
     }
   ],
-  "corner": { "r": 0, "c": 4 },
+  "corner": { "r": 0, "c": -1 },
   "boxSize": 2,
   "orientation": 0,
   "wallJumps": [

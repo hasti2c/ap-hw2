@@ -1,20 +1,20 @@
 {
-  "name": "l",
+  "name": "t",
   "tiles": [
     {
-      "position": { "r": 1, "c": 3 }
+      "position": { "r": 0, "c": -1 }
     },
     {
-      "position": { "r": 1, "c": 4 }
+      "position": { "r": 1, "c": -2 }
     },
     {
-      "position": { "r": 1, "c": 5 }
+      "position": { "r": 1, "c": -1 }
     },
     {
-      "position": { "r": 0, "c": 5 }
+      "position": { "r": 1, "c": 0 }
     }
   ],
-  "corner": { "r": 0, "c": 3 },
+  "corner": { "r": 0, "c": -2 },
   "boxSize": 3,
   "orientation": 0,
   "wallJumps": [
@@ -83,6 +83,6 @@
       ]
     ]
   ],
-  "color": "ORANGE",
-  "subImg": [216, 24, 24, 24]
+  "color": "PURPLE",
+  "subImg": [168, 72, 24, 24]
 }

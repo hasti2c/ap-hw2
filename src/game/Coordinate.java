@@ -3,7 +3,7 @@ package game;
 public class Coordinate {
     private int r, c;
 
-    public Coordinate(int r, int c) {
+    Coordinate(int r, int c) {
         this.r = r;
         this.c = c;
     }

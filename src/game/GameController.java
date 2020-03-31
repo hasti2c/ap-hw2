@@ -1,43 +1,65 @@
 package game;
 
-import com.google.gson.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import main.Controller;
 import graphic.GraphicController;
+import main.MainController;
 
-import java.io.*;
 import java.util.*;
 
 public class GameController implements Controller {
-    private Board board;
-    private Piece activePiece = null;
-    private Gson gson = new Gson();
-    private GraphicController graphic;
-    private final Timeline timeline;
+    private ArrayList<Integer> highScores = new ArrayList<>();
+    private transient int score = 0, clearedLines = 0, time = 0;
+    private transient Board board;
+    private transient Piece activePiece = null;
+    private transient MainController mainController;
+    private transient GraphicController graphic;
+    private transient Timeline timeline;
 
-    public GameController() {
-        this.board = new Board();
-        this.graphic = new GraphicController(this);
+    public void config(MainController mainController) {
+        this.mainController = mainController;
+        board = new Board(mainController.getRows(), mainController.getColumns());
+        graphic = new GraphicController(mainController, this);
+    }
+
+    public void newGame() {
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> nextMove()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
+    public MainController getMainController() { return mainController; }
+
+    public void setMainController(MainController mainController) { this.mainController = mainController; }
+
+    public GraphicController getGraphic() { return graphic; }
+
     public Piece getActivePiece() { return this.activePiece; }
 
-    public boolean nextMove() {
-        if (activePiece != null && drop())
-            return true;
+    public ArrayList<Integer> getHighScores() { return highScores; }
+
+    public int getScore() { return score; }
+
+    public int getClearedLines() { return clearedLines; }
+
+    public int getTime() { return time; }
+
+    private void nextMove() {
+        time++;
+        if (activePiece != null)
+            if (drop())
+                return;
+            else
+                score++;
         Piece randomPiece = getRandomPiece();
         clearGrid();
         if (!board.canInsert(randomPiece)) {
             gameOver();
-            return false;
+            return;
         }
         addPiece(randomPiece);
-        return true;
     }
 
     public boolean addPiece(Piece newPiece) {
@@ -51,12 +73,16 @@ public class GameController implements Controller {
     }
 
     public boolean updatePiece(Piece newPiece, Piece oldPiece) {
+        graphic.updateTopBar(score, clearedLines, time);
         if (!board.canInsert(newPiece, oldPiece))
             return false;
 
         board.removePiece(oldPiece);
         board.addPiece(newPiece);
         graphic.updatePiece(newPiece, oldPiece);
+
+        if(oldPiece == activePiece)
+            activePiece = newPiece;
         return true;
     }
 
@@ -68,9 +94,9 @@ public class GameController implements Controller {
         return true;
     }
 
-    public boolean drop(int toRow) { return updatePiece(activePiece.move(1, 0, toRow)); }
+    private boolean drop(int toRow, Piece p) { return updatePiece(p.move(1, 0, toRow), p); }
 
-    public boolean drop() { return drop(Board.ROWS); }
+    public boolean drop() { return drop(mainController.getRows(), activePiece); }
 
     public boolean shift(int dc) {
         assert Math.abs(dc) == 1;
@@ -81,24 +107,30 @@ public class GameController implements Controller {
         return updatePiece(activePiece.rotate(clockwise));
     }
 
-    boolean clearRow(int r) {
-        return updatePiece(activePiece.clearRow(r));
+    boolean clearRow(int r, Piece piece) {
+        return updatePiece(piece.clearRow(r), piece);
     }
 
     void clearGrid() {
-        for (int i = Board.ROWS - 1; i >= 0; i--) {
+        for (int i = mainController.getRows() - 1; i >= 0; i--) {
             if (!board.fullRow(i))
                 continue;
+
+            clearedLines++;
+            score += 10;
             Piece[] row = board.getRow(i);
-            ArrayList<Piece> uniquePieces = new ArrayList<>();
+
             for (Piece p : row)
-                if (!uniquePieces.contains(p))
-                    uniquePieces.add(p);
-            for (Piece p : uniquePieces) {
-                activePiece = p;
-                clearRow(i);
-                drop(i);
-            }
+                if (p != null)
+                    clearRow(i, p);
+            ArrayList<Piece> uniquePieces = new ArrayList<>();
+            for (int j = i - 1; j >= 0; j--)
+                for (Piece p : board.getRow(j))
+                    if (!uniquePieces.contains(p) && p != null)
+                        uniquePieces.add(p);
+            for (Piece p : uniquePieces)
+                drop(i, p);
+
             i++;
         }
         activePiece = null;
@@ -110,24 +142,10 @@ public class GameController implements Controller {
         return updatePiece(newPiece);
     }
 
-    String readFile(String path) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            Reader reader = new FileReader(path);
-            int data = reader.read();
-            while (data != -1) {
-                sb.append((char) data);
-                data = reader.read();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-    public Piece getDefaultPiece(String name) {
-        String json = readFile("database/" + name + ".json");
-        return gson.fromJson(json, Piece.class);
+    private Piece getDefaultPiece(String name) {
+        String json = mainController.readFile("database/pieces/" + name + ".json");
+        Piece newPiece = mainController.getGson().fromJson(json, Piece.class);
+        return newPiece.move(0, mainController.getColumns()/2);
     }
 
     Piece getRandomPiece() {
@@ -136,8 +154,20 @@ public class GameController implements Controller {
         return getDefaultPiece("" + pieces[num]);
     }
 
+    public void stop() { timeline.stop(); }
+
     private void gameOver() {
         timeline.stop();
+        resetScore();
+        mainController.gameOver(this);
+    }
+
+    private void resetScore() {
+        highScores.add(score);
+        Collections.sort(highScores);
+        Collections.reverse(highScores);
+        score = 0;
+        mainController.writeFile(mainController.getGson().toJson(this), "database/scores.json");
     }
 
 }

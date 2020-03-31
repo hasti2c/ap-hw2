@@ -21,17 +21,19 @@ public class PieceGraphic {
         pieceConfig();
     }
 
-    public ArrayList<TileGraphic> getTiles() { return this.tiles; }
+    ArrayList<TileGraphic> getTiles() { return this.tiles; }
 
-    void pieceConfig() {
+    private void pieceConfig() {
         for (Tile t : piece.getTiles())
-            tiles.add(new TileGraphic(t, color));
+            tiles.add(new TileGraphic(t, color, controller));
     }
 
     void pieceUpdate(Piece newPiece) {
         ArrayList<Tile> newTiles = newPiece.getTiles();
-        while(tiles.size() > newTiles.size())
+        while(tiles.size() > newTiles.size()) {
+            controller.removeTile(tiles.get(tiles.size() - 1));
             tiles.remove(tiles.size() - 1);
+        }
         for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).setPosition(newTiles.get(i).getPosition());
     }
