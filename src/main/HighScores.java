@@ -29,6 +29,7 @@ class HighScores {
         list = new VBox();
         list.setAlignment(Pos.CENTER);
         list.setSpacing(10);
+        list.setBackground(new Background(new BackgroundFill(Color.DARKSEAGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
 
         ArrayList<Text> texts = new ArrayList<>();
         int n = Math.min(10, highScores.size());
@@ -46,7 +47,6 @@ class HighScores {
         buttons.setSpacing(20);
         buttons.setMinHeight(50);
         buttons.getChildren().addAll(mainMenu, newGame);
-
         list.getChildren().add(buttons);
     }
 
@@ -82,6 +82,8 @@ class HighScores {
     
     private Button prettyButton(String text) {
         Button b = new Button(text);
+        b.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, CornerRadii.EMPTY, Insets.EMPTY)));
+        b.setTextFill(Color.WHITE);
         return b;
     }
 }

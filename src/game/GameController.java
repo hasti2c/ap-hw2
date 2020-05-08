@@ -7,6 +7,10 @@ import main.Controller;
 import graphic.GraphicController;
 import main.MainController;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.util.*;
 
 public class GameController implements Controller {
@@ -17,6 +21,7 @@ public class GameController implements Controller {
     private transient MainController mainController;
     private transient GraphicController graphic;
     private transient Timeline timeline;
+    private transient Clip music;
 
     public void config(MainController mainController) {
         this.mainController = mainController;
@@ -27,6 +32,7 @@ public class GameController implements Controller {
     public void newGame() {
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> nextMove()));
         timeline.setCycleCount(Timeline.INDEFINITE);
+        playMusic();
         timeline.play();
     }
 
@@ -51,8 +57,10 @@ public class GameController implements Controller {
         if (activePiece != null)
             if (drop())
                 return;
-            else
+            else {
                 score++;
+                playSuccessSound();
+            }
         Piece randomPiece = getRandomPiece();
         clearGrid();
         if (!board.canInsert(randomPiece)) {
@@ -98,6 +106,8 @@ public class GameController implements Controller {
 
     public boolean drop() { return drop(mainController.getRows(), activePiece); }
 
+    public void hardDrop() { while(drop(mainController.getRows(), activePiece));}
+
     public boolean shift(int dc) {
         assert Math.abs(dc) == 1;
         return updatePiece(activePiece.move(0, dc));
@@ -118,6 +128,7 @@ public class GameController implements Controller {
 
             clearedLines++;
             score += 10;
+            playSuccessSound();
             Piece[] row = board.getRow(i);
 
             for (Piece p : row)
@@ -154,12 +165,17 @@ public class GameController implements Controller {
         return getDefaultPiece("" + pieces[num]);
     }
 
-    public void stop() { timeline.stop(); }
+    public void stop() {
+        timeline.stop();
+        if (music != null)
+            music.stop();
+    }
 
     private void gameOver() {
         timeline.stop();
-        resetScore();
+
         mainController.gameOver(this);
+        resetScore();
     }
 
     private void resetScore() {
@@ -167,7 +183,31 @@ public class GameController implements Controller {
         Collections.sort(highScores);
         Collections.reverse(highScores);
         score = 0;
+        clearedLines = 0;
+        time = 0;
         mainController.writeFile(mainController.getGson().toJson(this), "database/scores.json");
     }
 
+    private void playMusic() {
+        try {
+            music = AudioSystem.getClip() ;
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("database/music.wav")) ;
+            music.open(audioInputStream) ;
+            music.loop(Clip.LOOP_CONTINUOUSLY);
+            music.start();
+        } catch (Exception e) {
+            music = null;
+        }
+    }
+
+    private void playSuccessSound() {
+        try {
+            Clip sound = AudioSystem.getClip() ;
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("database/success.wav")) ;
+            sound.open(audioInputStream) ;
+            sound.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

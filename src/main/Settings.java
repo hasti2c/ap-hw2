@@ -1,14 +1,13 @@
 package main;
 
 import game.Board;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 class Settings {
@@ -40,7 +39,7 @@ class Settings {
         TextField editColumns = new TextField();
         editRows.setMaxWidth(90);
         editColumns.setMaxWidth(90);
-        Button done = prettyButton("done");
+        Button done = prettyButton("Done");
 
         edit.setOnAction( e -> {
            dimensions.getChildren().set(1, editRows);
@@ -77,7 +76,8 @@ class Settings {
         Text[][] texts = new Text[][]{
             {prettyText("Right"), prettyText("RIGHT ARROW")},
             {prettyText("Left"), prettyText("LEFT ARROW")},
-            {prettyText("Down"), prettyText("DOWN ARROW")},
+            {prettyText("Soft Drop"), prettyText("DOWN ARROW")},
+            {prettyText("Hard Drop"), prettyText("SPACE")},
             {prettyText("Rotate Clockwise"), prettyText("UP ARROW or X")},
             {prettyText("Rotate Anticlockwise"), prettyText("CONTROL or Z")},
             {prettyText("Undo"), prettyText("R")},
@@ -85,7 +85,7 @@ class Settings {
             {prettyText("Settings"), prettyText("S")},
         };
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 2; j++)
                 controls.add(texts[i][j], j, i);
         }
@@ -111,6 +111,7 @@ class Settings {
         borderPane = new BorderPane(controls);
         borderPane.setTop(dimensions);
         borderPane.setBottom(buttons);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.DARKSEAGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     private void configScene() {
@@ -134,6 +135,8 @@ class Settings {
     
     private Button prettyButton(String text) {
         Button b = new Button(text);
+        b.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, CornerRadii.EMPTY, Insets.EMPTY)));
+        b.setTextFill(Color.WHITE);
         return b;
     }
 }

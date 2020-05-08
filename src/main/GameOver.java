@@ -1,12 +1,12 @@
 package main;
 
 import game.GameController;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class GameOver {
@@ -43,6 +43,7 @@ public class GameOver {
         vbox.getChildren().addAll(score, clearedLines, time, hbox);
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
+        vbox.setBackground(new Background(new BackgroundFill(Color.DARKSEAGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     private void configScene() {
@@ -57,6 +58,8 @@ public class GameOver {
     
     private Button prettyButton(String text) {
         Button b = new Button(text);
+        b.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, CornerRadii.EMPTY, Insets.EMPTY)));
+        b.setTextFill(Color.WHITE);
         return b;
     }
 }

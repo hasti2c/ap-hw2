@@ -30,7 +30,7 @@ class MainMenu {
         settings.setOnAction(e -> controller.settings());
 
         vbox.getChildren().addAll(newGame, highScores, settings);
-        vbox.setBackground(new Background(new BackgroundFill(Color.DARKSLATEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        vbox.setBackground(new Background(new BackgroundFill(Color.DARKSEAGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     private void configScene() {
@@ -40,7 +40,8 @@ class MainMenu {
 
     private Button prettyButton(String text) {
         Button b = new Button(text);
-        b.setBackground(new Background(new BackgroundFill(Color.SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        b.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, CornerRadii.EMPTY, Insets.EMPTY)));
+        b.setTextFill(Color.WHITE);
         return b;
     }
 }

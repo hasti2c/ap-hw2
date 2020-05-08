@@ -81,7 +81,7 @@ public class GraphicController implements Controller {
         configTopBar();
         borderPane = new BorderPane(gridPane);
         borderPane.setTop(topBar);
-        borderPane.setBackground(new Background(new BackgroundFill(Color.MIDNIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        borderPane.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     private void configScene() {
@@ -164,12 +164,15 @@ public class GraphicController implements Controller {
             case S:
                 game.stop();
                 mainController.settings();
+                return;
+            case SPACE:
+                game.hardDrop();
         }
     }
 
     private Text prettyText(String text) {
         Text t = new Text(text);
-        t.setFill(Color.WHITE);
+        t.setFill(Color.MIDNIGHTBLUE);
         return t;
     }
 }
